@@ -15,7 +15,7 @@ def local_fem(k, q, xs, ys):
 
     left = np.array([[ys[1] - ys[2], xs[2] - xs[1]],
                      [ys[2] - ys[0], xs[0] - xs[2]],
-                     [ys[0] - ys[1], xs[0] - xs[1]]])
+                     [ys[0] - ys[1], xs[2] - xs[0]]])
 
     # print("izquierda:\n", left)
     # print("izquia-trans:\n", np.transpose(left))
