@@ -15,3 +15,10 @@ $ . /venv/bin/activate
 (venv) $ pip install -r requirements.txt
 (venv) $ python -m femur
 ```
+
+## Save new dependencies
+
+``` sh
+# when in the project root
+$ pip freeze > requirements.txt
+```
