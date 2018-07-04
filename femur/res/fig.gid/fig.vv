@@ -1,0 +1,33 @@
+BeginZE /home/fernando/Code/git/femur/femur/res/fig.gid/fig.vv
+   x -8.34092235565185547 30.6470184326171875
+   y 16.8410530090332031 -0.697398066520690918
+   z -31.9413528442382812 31.9413528442382812
+   e 10.6471176147460938
+   v -0.441165262324063501 -0.0349385967665697822 -0.22058261931017159
+   r -0.869192621823713041
+   m 0.900245189666748047 -0.352630168199539185 0.255363523960113525 0 0.414284974336624146 0.51343303918838501 -0.751501500606536865 0 0.133890032768249512 0.782328903675079346 0.608305037021636963 0 0 0 0 1
+   c 9.58333301544189453 6.41666650772094727 0
+   pd 0
+   pno 0
+   pfo 0
+   pf 4
+   pv 0
+   NowUse 0
+   DrawingType 0
+   LightVector 90 90 150 0
+   OGLShadow(UseShadows) 0
+   OGLShadow(RenderMode) RenderNice
+   OGLShadow(ShadowBias) -0.002
+   OGLShadow(AmbientShadows) 1
+   OGLShadow(UseFBO) 1
+   OGLShadow(FBOSize) 2048
+   OGLShadow(DimmedLightFactor) 0.02
+   OGLStereo(UseStereo) 0
+   OGLStereo(RelativeEyeDistance) 1
+   OGLStereo(FlipEyes) 0
+   OGLStereo(StereoMode) AnaglyphColors
+   OGLStereo(EyeDistance) 0.075
+   OGLStereo(LeftEyeDistance) 1 0 0 1
+   OGLStereo(RightEyeDistance) 0 1 1 1
+EndZE /home/fernando/Code/git/femur/femur/res/fig.gid/fig.vv
+
