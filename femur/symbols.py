@@ -6,6 +6,10 @@ x, y, z = sym.symbols('x y z')
 
 a, b, c, d, f, g = sym.symbols('a b c d f g')
 
+f1, f2, f3 = sym.symbols('f1 f2 f3')
+
+p1, p2, p3, p4 = sym.symbols('p1 p2 p3 p4')
+
 x1, y1, z1 = sym.symbols('x1 y1 z1')
 x2, y2, z2 = sym.symbols('x2 y2 z2')
 x3, y3, z3 = sym.symbols('x3 y3 z3')
