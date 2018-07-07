@@ -1,0 +1,18 @@
+CONDITION: No-Slip
+CONDTYPE: over surfaces
+CONDMESHTYPE: over face_elements
+END CONDITION
+
+CONDITION: Input
+CONDTYPE: over surfaces
+CONDMESHTYPE: over face_elements
+QUESTION: Velocity-Meters
+VALUE: 0.0
+END CONDITION
+
+CONDITION: Output
+CONDTYPE: over surfaces
+CONDMESHTYPE: over face_elements
+END CONDITION
+
+CONDITION: 
