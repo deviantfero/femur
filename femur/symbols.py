@@ -4,7 +4,7 @@ import sympy as sym
 e, n, l = sym.symbols('e n l')
 x, y, z = sym.symbols('x y z')
 
-#constants
+# constants
 rho, velocity = sym.symbols('rho velocity')
 
 a, b, c, d, f, g = sym.symbols('a b c d f g')
