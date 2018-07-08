@@ -1,15 +1,17 @@
 # PROBLEM
-#  data: n-points n-nodes  n-elements time-delta initial velocity
+#  data: n-nodes n-elements time-delta initial velocity
 #  ==============================
-*npoin *nnode *nelem *GenData(Time_Delta) *GenData(Initial_Velocity)
+*npoin *nelem *GenData(Time_Delta) *GenData(Initial_Velocity)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 # NODES
 #  data: node, x, y, z
 #  ==============================
 *loop nodes
-  *nodesnum *nodescoord
+*nodesnum *nodescoord
 *end nodes
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 # CONECTIVITY
 # data: node, c1, c2, c3, c4
 # ===============================
@@ -17,6 +19,7 @@
 *elemsnum *elemsconec(1) *elemsconec(2) *elemsconec(3) *elemsconec(4)
 *end elems
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 # NOSLIP NODES
 # data: node
 # ===============================
@@ -25,6 +28,7 @@
 *nodesnum
 *end
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 # INPUT NODES
 # data: node
 # ===============================
@@ -33,10 +37,11 @@
 *nodesnum
 *end
 
+;;;;;;;;;;;;;;;;;
 # OUTPUT NODES
 # data: node
 # ===============================
 *Set Cond Output *nodes
 *loop nodes *OnlyInCond
-*nodesnum 
+*nodesnum
 *end
