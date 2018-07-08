@@ -5,8 +5,6 @@ END CONDITION
 NUMBER: 2 CONDITION: Input
 CONDTYPE: over surfaces
 CONDMESHTYPE: over nodes
-QUESTION: Velocity-Meters
-VALUE: 0.0
 END CONDITION
 NUMBER: 3 CONDITION: Output
 CONDTYPE: over surfaces
