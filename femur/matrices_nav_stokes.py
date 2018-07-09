@@ -1,5 +1,5 @@
 import sympy as sym
-from symbols import *
+from .symbols import *
 
 #isoparametric variables array
 isoparametric_arr = [e, n, l]
@@ -363,7 +363,6 @@ Vars = sym.Matrix([[vx1], [vy1], [vz1], [vx2], [vy2], [vz2], [vx3], [vy3], [vz3]
 local_lambda = sym.lambdify((x1, x2, x3, x4,
                              y1, y2 ,y3 ,y4,
                              z1, z2, z3, z4,
-                             p1, p2, p3, p4,
                              f1, f2, f3,
                              a, b, c, d, f, g,
                              rho, velocity), K, "numpy")
