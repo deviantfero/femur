@@ -42,8 +42,6 @@ def overlap_matrix_row(matrix, times):
 # E = (-matrices.Jdet) * (matrices.NT_integrated_respecto_to_epsilon *
 #                         matrices.gradNxX)  # * matrices.velocity_arr
 
-#K = sym.Matrix([])
-
 def navier_stokes_local(
         eq,
         force_arr,
@@ -57,7 +55,8 @@ def navier_stokes_local(
     zs = [x[2] for x in nodes_arr]
 
     return eq(*xs, *ys, *zs,
+              *force_arr,
               min(xs), max(xs),
               min(ys), max(ys),
               min(zs), max(zs),
-              *force_arr, density, velocity)
+              density, adv_velocity)
