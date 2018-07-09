@@ -33,7 +33,7 @@ def parse_info():
                 if len(nodes) == problem_info["node_count"]:
                     problem_info["nodes"] = nodes
             if data and stage == 2:
-                problem_info["connections"] += [data[1:]]
+                problem_info["connections"] += [int(x - 1) for x in data[1:]]
             if data and stage == 3:
                 problem_info["nodes"][int(data[0] - 1)].is_noslip = True
             if data and stage == 4:
