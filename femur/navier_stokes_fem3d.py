@@ -157,11 +157,27 @@ def navier_stokes(data, force_arr):
         assembly_right_mat[dirchlet_position_array[i] * 6 + 1, : ] = sym.Matrix(1, 1, [rem])
 
 
-    #removing rows and cols
+    #removing rows and cols from K matrix
     m, n = assembly_left_mat.shape
     rows = [i for i in range(m) if any(assembly_left_mat[i, j] != rem for j in range(n))]
     cols = [j for j in range(n) if any(assembly_left_mat[i, j] != rem for i in range(m))]
 
-    print('K Matrix shape: \n', assembly_left_mat[rows, cols].shape)
+    assembly_left_mat = assembly_left_mat[rows, cols]
+
+    #removing rows from variables
+    m, n = variables_mat.shape
+    rows = [i for i in range(m) if any(variables_mat[i, j] != rem for j in range(n))]
+    cols = [j for j in range(n) if any(variables_mat[i, j] != rem for i in range(m))]
+
+    variables_mat = variables_mat[rows, cols]
+
+    #removing rows from B matrix
+    m, n = assembly_right_mat.shape
+    rows = [i for i in range(m) if any(assembly_right_mat[i, j] != rem for j in range(n))]
+    cols = [j for j in range(n) if any(assembly_right_mat[i, j] != rem for i in range(m))]
+        
+    assembly_right_mat = assembly_right_mat[rows, cols]
+
+    print('K Matrix shape: \n', assembly_left_mat.shape)
     print('Vars Matrix shape: \n', variables_mat.shape)
     print('B Matrix shape: \n', assembly_right_mat.shape)
