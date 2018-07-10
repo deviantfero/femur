@@ -1,0 +1,21 @@
+Traceback (most recent call last):
+  File "MainKratos.py", line 34, in <module>
+    simulation.Run()
+  File "/home/fernando/Code/Kratos/kratos/python_scripts/analysis_stage.py", line 40, in Run
+    self.Initialize()
+  File "/home/fernando/Code/Kratos/applications/FluidDynamicsApplication/python_scripts/fluid_dynamics_analysis.py", line 50, in Initialize
+    self.solver.ImportModelPart()
+  File "/home/fernando/Code/Kratos/applications/FluidDynamicsApplication/python_scripts/navier_stokes_solver_fractionalstep.py", line 136, in ImportModelPart
+    super(NavierStokesSolverFractionalStep, self).ImportModelPart()
+  File "/home/fernando/Code/Kratos/applications/FluidDynamicsApplication/python_scripts/navier_stokes_base_solver.py", line 37, in ImportModelPart
+    self._execute_check_and_prepare()
+  File "/home/fernando/Code/Kratos/applications/FluidDynamicsApplication/python_scripts/navier_stokes_base_solver.py", line 152, in _execute_check_and_prepare
+    check_and_prepare_model_process_fluid.CheckAndPrepareModelProcess(self.main_model_part, prepare_model_part_settings).Execute()
+  File "/home/fernando/Code/Kratos/applications/FluidDynamicsApplication/python_scripts/check_and_prepare_model_process_fluid.py", line 60, in Execute
+    KratosMultiphysics.TetrahedralMeshOrientationCheck(fluid_computational_model_part,throw_errors).Execute()
+RuntimeError: Error: Found a condition without any corresponding element. ID of condition = 539
+
+
+in kratos/processes/tetrahedral_mesh_orientation_check.h:296:virtual void TetrahedralMeshOrientationCheck::Execute()
+   kratos/processes/tetrahedral_mesh_orientation_check.h:321:virtual void TetrahedralMeshOrientationCheck::Execute()
+
