@@ -21,10 +21,9 @@ def main():
 
         local_mat = nsfem.navier_stokes_local(matrices.local_lambda, [1, 2, 3], 5, 1000, nodes_arr)
 
-        numpyarr = npy.array(list(local_mat))
-        where_are_NaNs = npy.isnan(numpyarr)
-        numpyarr[where_are_NaNs] = 0
-        print(numpyarr)
+        where_are_NaNs = npy.isnan(local_mat)
+        local_mat[where_are_NaNs] = 0
+        print(local_mat)
 
 
 
