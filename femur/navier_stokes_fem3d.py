@@ -82,8 +82,10 @@ def navier_stokes(data, force_arr):
         #assembling left side
         for i in range(len(conn)):
             for j in range(len(conn)):
-                assembly_left_mat[conn[i] : (conn[i] + 1) * 6 - 1, conn[j] : (conn[j] + 1) * 6 - 1] += local_left_mat[i : (i + 1) * 6 - 1, j : (j + 1) * 6 - 1] 
-                assembly_right_mat[conn[i] : (conn[i] + 1) * 6 - 1, : ] += local_right_mat[i : (i + 1) * 6 - 1, : ] 
+                assembly_left_mat[conn[i] * 6 : (conn[i] * 6) + 6, 
+                                  conn[j] * 6 : (conn[j] * 6) + 6] += local_left_mat[i * 6 : i * 6 + 6, 
+                                                                                     j * 6 : j * 6 + 6] 
+                assembly_right_mat[conn[i] * 6 : (conn[i] * 6) + 6, : ] += local_right_mat[i * 6 : (i * 6) + 6, : ] 
 
 
 def navier_stokes_local(
