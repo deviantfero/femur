@@ -34,7 +34,6 @@ def overlap_matrix_row(matrix, times):
     return result
 
 # # force section
-# A = matrices.Jdet * matrices.NT_integrated_respecto_to_epsilon * matrices.force_arr
 # B = velocity * (matrices.Jdet) * (matrices.NT_integrated_respecto_to_epsilon *
 #                                   matrices.gradNxX)  # * matrices.velocity_arr
 # C = (-matrices.Jdet / rho) * (matrices.NT_integrated_respecto_to_epsilon *
@@ -44,19 +43,23 @@ def overlap_matrix_row(matrix, times):
 #                         matrices.gradNxX)  # * matrices.velocity_arr
 
 def variables_vector(cant):
-    strf = ""
-    for i in range(cant):
-        strv += "vx{} vy{} vz{} ".format(x)
-        strp += "p{} p{} p{} ".format(x)
-        strf += "{} {} ".format(strv, strp)
+    aux = []
 
-    return sym.symbols(strf)
+    for x in range(cant):
+        strv = "vx{} vy{} vz{} ".format(x, x, x)
+        strp = "p{} p{} p{} ".format(x, x, x)
+        strf = "{} {} ".format(strv, strp)
+        aux += list(sym.symbols(strf))
+
+    return sym.Matrix(aux)
 
 def navier_stokes(data, force_arr):
     conn_size = len(data["nodes"])
 
     #6 times cause i have 6 variables
-    assembly_mat = sym.Matrix(conn_size * 6, conn_size * 6, ([0] * ((conn_size * 6)**2)))
+    assembly_left_mat = sym.Matrix(conn_size * 6, conn_size * 6, ([0] * ((conn_size * 6)**2)))
+    variables_mat = variables_vector(conn_size)
+    assembly_right_mat = sym.Matrix(conn_size * 6, 1, [0] * conn_size * 6)
 
     #solving each local mat
     for conn in data["connections"]:
@@ -65,24 +68,27 @@ def navier_stokes(data, force_arr):
                      data["nodes"][conn[2]].get_position(), 
                      data["nodes"][conn[3]].get_position()]
 
-        local_mat = navier_stokes_local(matrices.local_lambda, 
-                                              [1, 2, 3], 
-                                              data["velocity"], 
-                                              data["density"], 
-                                              nodes_arr)
+        local_left_mat, local_right_mat = navier_stokes_local(matrices.left_side_lambda,
+                                                              matrices.right_side_lambda,
+                                                              [1, 2, 3], 
+                                                              data["velocity"], 
+                                                              data["density"], 
+                                                              nodes_arr)
 
-        #removing non inexact values (nans) from local solutions (in case determinant of gradXxE is zero)
-        where_are_NaNs = npy.isnan(local_mat)
-        local_mat[where_are_NaNs] = 0
+        # #removing non inexact values (nans) from local solutions (in case determinant of gradXxE is zero)
+        local_left_mat = npy.nan_to_num(local_left_mat)
+        local_right_mat = npy.nan_to_num(local_right_mat)
 
+        #assembling left side
         for i in range(len(conn)):
             for j in range(len(conn)):
-                assembly_mat[conn[i] : conn[i] + 6, conn[j] : conn[j] + 6] += local_mat[i : i + 6, j : j + 6] 
+                assembly_left_mat[conn[i] : conn[i] + 6, conn[j] : conn[j] + 6] += local_left_mat[i : i + 6, j : j + 6] 
+                assembly_right_mat[conn[i] : conn[i] + 6, : ] += local_right_mat[i : i + 6, : ] 
 
-        # print(assembly_mat[0,0])
 
 def navier_stokes_local(
-        eq,
+        left,
+        right,
         force_arr,
         adv_velocity,
         density,
@@ -93,11 +99,13 @@ def navier_stokes_local(
     ys = [x[1] for x in nodes_arr]
     zs = [x[2] for x in nodes_arr]
 
-    result = eq(*xs, *ys, *zs,
-              *force_arr,
-              min(xs), max(xs),
-              min(ys), max(ys),
-              min(zs), max(zs),
-              density, adv_velocity)
+    result_left = left(*xs, *ys, *zs,
+                       min(xs), max(xs),
+                       min(ys), max(ys),
+                       min(zs), max(zs),
+                       density, adv_velocity)
 
-    return result
+    result_right = right(*xs, *ys, *zs, *force_arr)
+
+
+    return result_left, result_right
