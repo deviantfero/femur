@@ -13,7 +13,8 @@ def parse_info():
     :time_delta: the step of time in simulation
     :velocity: initial velocity
     """
-    problem_info = {"connections": []}
+    problem_info = {"connections": [],
+                    "noslip_elems": []}
     nodes = []
     stage = 0
 
@@ -40,4 +41,6 @@ def parse_info():
                 problem_info["nodes"][int(data[0] - 1)].is_input = True
             if data and stage == 5:
                 problem_info["nodes"][int(data[0] - 1)].is_output = True
+            if data and stage == 6:
+                problem_info["noslip_elems"] += [int(data[0] - 1)]
     return problem_info
