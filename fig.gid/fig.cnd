@@ -1,6 +1,6 @@
 NUMBER: 1 CONDITION: No-Slip
 CONDTYPE: over surfaces
-CONDMESHTYPE: over nodes
+CONDMESHTYPE: over face elements
 END CONDITION
 NUMBER: 2 CONDITION: Input
 CONDTYPE: over surfaces
