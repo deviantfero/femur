@@ -148,7 +148,7 @@ def navier_stokes(data, force_arr):
         assembly_left_mat[dirchlet_position_array[i] * 6 + 1, : ] = sym.Matrix(1, assembly_left_mat.shape[1], [rem] * assembly_left_mat.shape[1])
 
         assembly_left_mat[ : , dirchlet_position_array[i] * 6] = sym.Matrix(assembly_left_mat.shape[0], 1, [rem] * assembly_left_mat.shape[0])
-        assembly_left_mat[ : , dirchlet_position_array[i] * 6] = sym.Matrix(assembly_left_mat.shape[0], 1, [rem] * assembly_left_mat.shape[0])
+        assembly_left_mat[ : , dirchlet_position_array[i] * 6 + 1] = sym.Matrix(assembly_left_mat.shape[0], 1, [rem] * assembly_left_mat.shape[0])
 
         variables_mat[dirchlet_position_array[i] * 6, : ] = sym.Matrix(1, 1, [rem])
         variables_mat[dirchlet_position_array[i] * 6 + 1, : ] = sym.Matrix(1, 1, [rem])
@@ -156,6 +156,12 @@ def navier_stokes(data, force_arr):
         assembly_right_mat[dirchlet_position_array[i] * 6, : ] = sym.Matrix(1, 1, [rem])
         assembly_right_mat[dirchlet_position_array[i] * 6 + 1, : ] = sym.Matrix(1, 1, [rem])
 
-    print('K Matrix shape: \n', assembly_left_mat.shape)
+
+    #removing rows and cols
+    m, n = assembly_left_mat.shape
+    rows = [i for i in range(m) if any(assembly_left_mat[i, j] != rem for j in range(n))]
+    cols = [j for j in range(n) if any(assembly_left_mat[i, j] != rem for i in range(m))]
+
+    print('K Matrix shape: \n', assembly_left_mat[rows, cols].shape)
     print('Vars Matrix shape: \n', variables_mat.shape)
     print('B Matrix shape: \n', assembly_right_mat.shape)
