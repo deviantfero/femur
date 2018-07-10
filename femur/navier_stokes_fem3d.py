@@ -53,6 +53,30 @@ def variables_vector(cant):
 
     return sym.Matrix(aux)
 
+def navier_stokes_local(
+        left,
+        right,
+        force_arr,
+        adv_velocity,
+        density,
+        nodes_arr):
+
+    # nodes
+    xs = [x[0] for x in nodes_arr]
+    ys = [x[1] for x in nodes_arr]
+    zs = [x[2] for x in nodes_arr]
+
+    result_left = left(*xs, *ys, *zs,
+                       min(xs), max(xs),
+                       min(ys), max(ys),
+                       min(zs), max(zs),
+                       density, adv_velocity)
+
+    result_right = right(*xs, *ys, *zs, *force_arr)
+
+
+    return result_left, result_right
+
 def navier_stokes(data, force_arr):
     conn_size = len(data["nodes"])
 
@@ -108,75 +132,30 @@ def navier_stokes(data, force_arr):
     #applying dirchlet condition
     velocity_0 = 15
 
-
-    print("adding values from dirchlet")
     #adding the velocity to right mat
     for i in range(len(dirchlet_position_array)):
         #adding to right matrix the vx and vy for each node in the entry face of the model
         assembly_right_mat[ : , 0] += assembly_left_mat[ : , dirchlet_position_array[i] * 6] * (-velocity_0)
         assembly_right_mat[ : , 0] += assembly_left_mat[ : , dirchlet_position_array[i] * 6 + 1] * (-velocity_0)
 
-    print("deleting rows and cols")
-
     #deleting ecuations solved
     dirchlet_position_array = dirchlet_position_array[::-1]    
 
+    rem = sym.Symbol("rem")
     #removing vx and vy from nodes in entry point
     for i in range(len(dirchlet_position_array)):
-        #deleting rows
-        assembly_left_mat = assembly_left_mat[ : dirchlet_position_array[i] * 6 + 1, : ].col_join(assembly_left_mat[dirchlet_position_array[i] * 6 + 1 + 1 : , : ]) 
-        assembly_left_mat = assembly_left_mat[ : dirchlet_position_array[i] * 6, : ].col_join(assembly_left_mat[dirchlet_position_array[i] * 6 + 1 : , : ]) 
+        assembly_left_mat[dirchlet_position_array[i] * 6, : ] = sym.Matrix(1, assembly_left_mat.shape[1], [rem] * assembly_left_mat.shape[1])
+        assembly_left_mat[dirchlet_position_array[i] * 6 + 1, : ] = sym.Matrix(1, assembly_left_mat.shape[1], [rem] * assembly_left_mat.shape[1])
 
-        variables_mat = variables_mat[ : dirchlet_position_array[i] * 6 + 1 , : ].col_join(variables_mat[dirchlet_position_array[i] * 6 + 2 : , : ])
-        variables_mat = variables_mat[ : dirchlet_position_array[i] * 6 , : ].col_join(variables_mat[dirchlet_position_array[i] * 6 + 1 : , : ])
+        assembly_left_mat[ : , dirchlet_position_array[i] * 6] = sym.Matrix(assembly_left_mat.shape[0], 1, [rem] * assembly_left_mat.shape[0])
+        assembly_left_mat[ : , dirchlet_position_array[i] * 6] = sym.Matrix(assembly_left_mat.shape[0], 1, [rem] * assembly_left_mat.shape[0])
 
-        assembly_right_mat = assembly_right_mat[ : dirchlet_position_array[i] * 6 + 1, : ].col_join(assembly_right_mat[dirchlet_position_array[i] * 6 + 1 + 1 : , : ])
-        assembly_right_mat = assembly_right_mat[ : dirchlet_position_array[i] * 6, : ].col_join(assembly_right_mat[dirchlet_position_array[i] * 6 + 1 : , : ])
+        variables_mat[dirchlet_position_array[i] * 6, : ] = sym.Matrix(1, 1, [rem])
+        variables_mat[dirchlet_position_array[i] * 6 + 1, : ] = sym.Matrix(1, 1, [rem])
 
-        #deleting cols from left mat
-        assembly_left_mat = assembly_left_mat[ : , : dirchlet_position_array[i] * 6 + 1].row_join(assembly_left_mat[ : , dirchlet_position_array[i] * 6 + 1 + 1 : ])
-        assembly_left_mat = assembly_left_mat[ : , : dirchlet_position_array[i] * 6].row_join(assembly_left_mat[ : , dirchlet_position_array[i] * 6 + 1 : ])
-        print(i)
-
-
-        # assembly_left_mat.row_del(dirchlet_position_array[i] * 6)
-        # assembly_left_mat.row_del(dirchlet_position_array[i] * 6 + 1)
-
-        # variables_mat.row_del(dirchlet_position_array[i] * 6)
-        # variables_mat.row_del(dirchlet_position_array[i] * 6 + 1)
-        #
-        # assembly_right_mat.row_del(dirchlet_position_array[i] * 6)
-        # assembly_right_mat.row_del(dirchlet_position_array[i] * 6 + 1)
-        #
-        # #deleting cols
-        # assembly_left_mat.col_del(dirchlet_position_array[i] * 6)
-        # assembly_left_mat.col_del(dirchlet_position_array[i] * 6 + 1)
+        assembly_right_mat[dirchlet_position_array[i] * 6, : ] = sym.Matrix(1, 1, [rem])
+        assembly_right_mat[dirchlet_position_array[i] * 6 + 1, : ] = sym.Matrix(1, 1, [rem])
 
     print('K Matrix shape: \n', assembly_left_mat.shape)
     print('Vars Matrix shape: \n', variables_mat.shape)
     print('B Matrix shape: \n', assembly_right_mat.shape)
-
-
-def navier_stokes_local(
-        left,
-        right,
-        force_arr,
-        adv_velocity,
-        density,
-        nodes_arr):
-
-    # nodes
-    xs = [x[0] for x in nodes_arr]
-    ys = [x[1] for x in nodes_arr]
-    zs = [x[2] for x in nodes_arr]
-
-    result_left = left(*xs, *ys, *zs,
-                       min(xs), max(xs),
-                       min(ys), max(ys),
-                       min(zs), max(zs),
-                       density, adv_velocity)
-
-    result_right = right(*xs, *ys, *zs, *force_arr)
-
-
-    return result_left, result_right
