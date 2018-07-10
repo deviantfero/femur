@@ -1,4 +1,5 @@
 import sympy as sym
+import numpy as npy
 from . import matrices_nav_stokes as matrices
 from .symbols import *
 from sympy.interactive import printing
@@ -54,9 +55,11 @@ def navier_stokes_local(
     ys = [x[1] for x in nodes_arr]
     zs = [x[2] for x in nodes_arr]
 
-    return eq(*xs, *ys, *zs,
+    result = eq(*xs, *ys, *zs,
               *force_arr,
               min(xs), max(xs),
               min(ys), max(ys),
               min(zs), max(zs),
               density, adv_velocity)
+
+    return result

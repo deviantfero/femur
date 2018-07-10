@@ -1,3 +1,4 @@
+import numpy as npy
 from . import matrices_nav_stokes as matrices
 from . import navier_stokes_fem3d as nsfem
 from . import parser
@@ -13,13 +14,18 @@ def main():
     # print('connection', data["connections"])
 
     for conn in data["connections"]:
-
         nodes_arr = [data["nodes"][conn[0]].get_position(), 
                      data["nodes"][conn[1]].get_position(), 
                      data["nodes"][conn[2]].get_position(), 
                      data["nodes"][conn[3]].get_position()]
 
-        print(nsfem.navier_stokes_local(matrices.local_lambda, [1, 2, 3], 5, 1000, nodes_arr))
+        local_mat = nsfem.navier_stokes_local(matrices.local_lambda, [1, 2, 3], 5, 1000, nodes_arr)
+
+        numpyarr = npy.array(list(local_mat))
+        where_are_NaNs = npy.isnan(numpyarr)
+        numpyarr[where_are_NaNs] = 0
+        print(numpyarr)
+
 
 
 if __name__ == "__main__":
