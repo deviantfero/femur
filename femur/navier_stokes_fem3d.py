@@ -43,6 +43,44 @@ def overlap_matrix_row(matrix, times):
 # E = (-matrices.Jdet) * (matrices.NT_integrated_respecto_to_epsilon *
 #                         matrices.gradNxX)  # * matrices.velocity_arr
 
+def variables_vector(cant):
+    strf = ""
+    for i in range(cant):
+        strv += "vx{} vy{} vz{} ".format(x)
+        strp += "p{} p{} p{} ".format(x)
+        strf += "{} {} ".format(strv, strp)
+
+    return sym.symbols(strf)
+
+def navier_stokes(data, force_arr):
+    conn_size = len(data["nodes"])
+
+    #6 times cause i have 6 variables
+    assembly_mat = sym.Matrix(conn_size * 6, conn_size * 6, ([0] * ((conn_size * 6)**2)))
+
+    #solving each local mat
+    for conn in data["connections"]:
+        nodes_arr = [data["nodes"][conn[0]].get_position(), 
+                     data["nodes"][conn[1]].get_position(), 
+                     data["nodes"][conn[2]].get_position(), 
+                     data["nodes"][conn[3]].get_position()]
+
+        local_mat = navier_stokes_local(matrices.local_lambda, 
+                                              [1, 2, 3], 
+                                              data["velocity"], 
+                                              data["density"], 
+                                              nodes_arr)
+
+        #removing non inexact values (nans) from local solutions (in case determinant of gradXxE is zero)
+        where_are_NaNs = npy.isnan(local_mat)
+        local_mat[where_are_NaNs] = 0
+
+        for i in range(len(conn)):
+            for j in range(len(conn)):
+                assembly_mat[conn[i] : conn[i] + 6, conn[j] : conn[j] + 6] += local_mat[i : i + 6, j : j + 6] 
+
+        # print(assembly_mat[0,0])
+
 def navier_stokes_local(
         eq,
         force_arr,
