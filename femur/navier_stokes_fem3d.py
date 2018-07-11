@@ -282,7 +282,7 @@ def navier_stokes(data, force_arr):
 
     euler_list = []
 
-    for i in range(0, end_time, delta_time):
+    for i in range(0, int(end_time), delta_time):
         euler_list += [(i, [[x if x != rem else 0 for x in curr_x[::6]], [x if x != rem else 0 for x in curr_x[1::6]], 
                             [x if x != rem else 0 for x in curr_x[2::6]], velocity_0 / variables_mat.shape[0],
                             [x if x != rem else 0 for x in curr_x[3::6]]])]
