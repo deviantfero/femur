@@ -283,10 +283,14 @@ def navier_stokes(data, force_arr):
 
 
     spitter.init_file(sys.argv[2])
-    for i in range(0, limit):
-        euler_elem = (i, [[x if x != rem else 0 for x in curr_x[::6]], [x if x != rem else 0 for x in curr_x[1::6]],
-                          [x if x != rem else 0 for x in curr_x[2::6]], velocity_0 / variables_mat.shape[0],
-                          [x if x != rem else 0 for x in curr_x[3::6]]])
-        spitter.write_delta(sys.argv[2], euler_elem)
+    for time in range(limit):
+        velocity_matrix = []
+        pression_matrix = []
+        for i in range(len(data_vars)):
+            vx, vy, vz, p = curr_x[i * 6: i * 6 + 4]
+            velocity_matrix += [[i, vx, vy, vz, math.sqrt(vx**2 + vy**2 + vz ** 2)]]
+            pression_matrix += [[i, p]]
+
+        spitter.write_delta(sys.argv[2], (time * delta_time, velocity_matrix, pression_matrix))
         next_x = (sym.eye(assembly_left_mat.shape[0]) + delta_time * assembly_left_mat).inv() * (curr_x + delta_time * assembly_right_mat)
         curr_x = next_x
