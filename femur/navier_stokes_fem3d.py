@@ -97,6 +97,7 @@ def navier_stokes(data, force_arr):
     #applying no slip conditions
     conns_mat = data["connections"]
     noslip_elems = data["noslip_elems"]
+    noslip_connections = [data["connections"][x] for x in data["noslip_elems"]]
     noslip_nodes = [x for x in data["nodes"] if x.is_noslip]
 
 
@@ -123,12 +124,13 @@ def navier_stokes(data, force_arr):
 
         #removing all no_slip elements that contain this nodes
         elem_match = []
-        cond = 0
 
-        for elem, i in enumerate(noslip_elems):
+        for i, elem in enumerate(noslip_connections):
             for node in elem:
-                cond += node in nodes_in_plane
-            elem_match[i] = cond == 1
+                cond = 0
+                for nip in nodes_in_plane:
+                    cond += data["nodes"][node] == nip
+            elem_match.append(cond > 0)
 
         new_elems = [noslip_elems[x] for x in range(len(noslip_elems)) if not elem_match[x]]
         print('len of noslip_elems: ', len(noslip_elems))
