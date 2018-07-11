@@ -1,7 +1,7 @@
 # PROBLEM STAGE 0
 #  data: n-nodes n-elements time-delta initial velocity
 #  ==============================
-*npoin *nelem *GenData(Time_Delta) *GenData(Initial_Velocity) *GenData(Liquid_Density)
+*npoin *GenData(End_Time) *GenData(Time_Delta) *GenData(Initial_Velocity) *GenData(Liquid_Density)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 # NODES STAGE 1

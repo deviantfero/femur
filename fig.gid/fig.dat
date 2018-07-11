@@ -1,7 +1,7 @@
 # PROBLEM STAGE 0
 #  data: n-nodes n-elements time-delta initial velocity
 #  ==============================
-1005 3920 0.1 1.0 1000.0
+1005 1.0 0.1 0.0 1000.0
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 # NODES STAGE 1
