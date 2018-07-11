@@ -150,8 +150,15 @@ def navier_stokes(data, force_arr):
             nodes_vals_in_elem += [data["nodes"][i]]
 
         #noslip nodes for this iteration (with this i create the plane)
-        curr_noslip_nodes = [x for x in nodes_vals_in_elem if x.is_noslip]
+        curr_noslip_nodes = [x for x in nodes_vals_in_elem if x.is_noslip][:3]
         plane = sym.Poly(surface_from_three_points(*curr_noslip_nodes[:3]))
+        # plane_2 = sym.Plane(sym.Point3D(*[x.get_position() for x in curr_noslip_nodes[0]]),
+        #                     sym.Point3D(*[x.get_position() for x in curr_noslip_nodes[1]]),
+        #                     sym.Point3D(*[x.get_position() for x in curr_noslip_nodes[2]]))
+        #
+        # normal_vector = plane_2.normal_vector
+        # unit_vector = normal_vector / math.sqrt(normal_vector[0]**2 + normal_vector[1]**2 + normal_vector[2]**2)
+        # noslip_velocity_vector = unit_vector * 638
 
         nodes_in_plane = [x.id for x in data["nodes"] if is_on_plane(x, plane)]
 
@@ -177,13 +184,16 @@ def navier_stokes(data, force_arr):
         #             cond += data["nodes"][node] == nip
         #     elem_match.append(cond > 0)
         #
-        # count += 1
         #
         # new_elems = [noslip_elems[x] for x in range(len(noslip_elems)) if not elem_match[x]]
         dirchlet_extra_nodes += nodes_in_plane
         noslip_elems = noslip_elems[1:]
 
+        count += 1
+        print(count)
 
+
+    #filter repeated nodes
     dirchlet_extra_nodes = list(set(dirchlet_extra_nodes))
 
     #dirchlet condition array
@@ -261,9 +271,15 @@ def navier_stokes(data, force_arr):
     #solving time 
     delta_time = data["time_delta"]
     end_time = data["end_time"]
-    f = sym.lambdify(*variables_mat, variables_mat)
-    curr_x = f(*[10 for x in range(variables_mat.shape[0])])
+    f = sym.lambdify((*variables_mat), variables_mat)
+
+    curr_x = f(*[velocity_0 for x in range(variables_mat.shape[0])])
+
+    euler_list = []
+
     for i in range(0, end_time, delta_time):
+        euler_list += [(i, [curr_x[::6], curr_x[1::6], curr_x[2::6], velocity_0 / variables_mat.shape[0]],
+                            curr_x[3::6])]
         next_x = (sym.eye(assembly_left_mat.shape[0]) + delta_time * assembly_left_mat).inv() * (curr_x + delta_time * assembly_right_mat)
         print(next_x)
         curr_x = next_x
