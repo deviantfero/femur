@@ -273,6 +273,7 @@ def navier_stokes(data, force_arr):
     #solving time 
     delta_time = data["time_delta"]
     end_time = data["end_time"]
+    limit = int(end_time / delta_time)
     #f = sym.lambdify(tuple(variables_mat), variables_mat)
 
     data_vars = tuple(variables_mat)
@@ -280,16 +281,12 @@ def navier_stokes(data, force_arr):
     curr_x = variables_mat.subs([x for x in data])
     #f(*[velocity_0 for x in range(variables_mat.shape[0])])
 
-    euler_list = []
-
-    for i in range(0, int(end_time), delta_time):
-        euler_list += [(i, [[x if x != rem else 0 for x in curr_x[::6]], [x if x != rem else 0 for x in curr_x[1::6]], 
-                            [x if x != rem else 0 for x in curr_x[2::6]], velocity_0 / variables_mat.shape[0],
-                            [x if x != rem else 0 for x in curr_x[3::6]]])]
-        next_x = (sym.eye(assembly_left_mat.shape[0]) + delta_time * assembly_left_mat).inv() * (curr_x + delta_time * assembly_right_mat)
-        curr_x = next_x
 
     spitter.init_file(sys.argv[2])
-    for t in euler_list:
-        spitter.write_delta(sys.argv[2], euler_list)
-
+    for i in range(0, limit):
+        euler_elem = (i, [[x if x != rem else 0 for x in curr_x[::6]], [x if x != rem else 0 for x in curr_x[1::6]],
+                          [x if x != rem else 0 for x in curr_x[2::6]], velocity_0 / variables_mat.shape[0],
+                          [x if x != rem else 0 for x in curr_x[3::6]]])
+        spitter.write_delta(sys.argv[2], euler_elem)
+        next_x = (sym.eye(assembly_left_mat.shape[0]) + delta_time * assembly_left_mat).inv() * (curr_x + delta_time * assembly_right_mat)
+        curr_x = next_x
