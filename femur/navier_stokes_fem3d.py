@@ -153,18 +153,19 @@ def navier_stokes(data, force_arr):
         curr_noslip_nodes = [x for x in nodes_vals_in_elem if x.is_noslip]
         plane = sym.Poly(surface_from_three_points(*curr_noslip_nodes[:3]))
 
-        #removing all nodes in plane
         nodes_in_plane = [x.id for x in data["nodes"] if is_on_plane(x, plane)]
-        normal_vector = sym.Matrix([plane.coeffs()[:3]])
-        if normal_vector.shape[1] < 2:
-            normal_vector.col_insert(1, sym.Matrix([0]))
-            normal_vector.col_insert(2, sym.Matrix([0]))
-        else: 
-            if normal_vector.shape[1] < 3:
-                normal_vector.col_insert(2, sym.Matrix([0]))
 
-        unit_vector = normal_vector / math.sqrt(normal_vector[0, 0]**2 + normal_vector[0, 1]**2 + normal_vector[0, 2]**2)
-        noslip_velocity_vector = unit_vector * 638
+        # #removing all nodes in plane
+        # normal_vector = sym.Matrix([plane.coeffs()[:3]])
+        # if normal_vector.shape[1] < 2:
+        #     normal_vector.col_insert(1, sym.Matrix([0]))
+        #     normal_vector.col_insert(2, sym.Matrix([0]))
+        # else: 
+        #     if normal_vector.shape[1] < 3:
+        #         normal_vector.col_insert(2, sym.Matrix([0]))
+        #
+        # unit_vector = normal_vector / math.sqrt(normal_vector[0, 0]**2 + normal_vector[0, 1]**2 + normal_vector[0, 2]**2)
+        # noslip_velocity_vector = unit_vector * 638
 
         # #removing all no_slip elements that contain this nodes
         # elem_match = []
@@ -261,8 +262,8 @@ def navier_stokes(data, force_arr):
     delta_time = data["time_delta"]
     end_time = data["end_time"]
     f = sym.lambdify(*variables_mat, variables_mat)
+    curr_x = f(*[10 for x in range(variables_mat.shape[0])])
     for i in range(0, end_time, delta_time):
-        curr_x = f(*[10 for x in range(variables_mat.shape[0])])
         next_x = (sym.eye(assembly_left_mat.shape[0]) + delta_time * assembly_left_mat).inv() * (curr_x + delta_time * assembly_right_mat)
         print(next_x)
         curr_x = next_x
