@@ -273,7 +273,7 @@ def navier_stokes(data, force_arr):
     #solving time 
     delta_time = data["time_delta"]
     end_time = data["end_time"]
-    f = sym.lambdify((*variables_mat), variables_mat)
+    f = sym.lambdify(tuple(variables_mat), variables_mat)
 
     curr_x = f(*[velocity_0 for x in range(variables_mat.shape[0])])
 
