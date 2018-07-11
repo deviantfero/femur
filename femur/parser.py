@@ -31,7 +31,7 @@ def parse_info():
                 problem_info["velocity"] = data[3]
                 problem_info["density"] = data[4]
             if data and stage == 1:
-                nodes.append(Node(*data[1:]))
+                nodes.append(Node(*data))
                 if len(nodes) == problem_info["node_count"]:
                     problem_info["nodes"] = nodes
             if data and stage == 2:
