@@ -1,5 +1,6 @@
 class Node:
-    def __init__(self, x, y, z):
+    def __init__(self, id, x, y, z):
+        self.id = int(id) - 1
         self.x = x
         self.y = y
         self.z = z
