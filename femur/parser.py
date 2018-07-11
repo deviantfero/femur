@@ -1,4 +1,5 @@
 import fileinput
+import sys
 from .node import Node
 
 
@@ -18,7 +19,7 @@ def parse_info():
     nodes = []
     stage = 0
 
-    for line in fileinput.input():
+    for line in fileinput.input(sys.argv[1]):
         if ";" in line:
             stage += 1
         elif "#" not in line:
