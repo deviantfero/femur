@@ -26,6 +26,7 @@ def parse_info():
             data = [float(x) for x in line if x is not ""]
             if data and stage == 0:
                 problem_info["node_count"] = data[0]
+                problem_info["end_time"] = data[1]
                 problem_info["time_delta"] = data[2]
                 problem_info["velocity"] = data[3]
                 problem_info["density"] = data[4]
