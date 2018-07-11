@@ -102,8 +102,8 @@ def navier_stokes(data, force_arr):
 
 
     #finding plane and removing nodes that belong to plane (only for no slip nodes)
-    while len(noslip_elems) > 0:
-        print('noslip elements left: ', len(noslip_elems))
+    count = 0
+    while len(noslip_elems) > 0 and count < 12:
         curr_elem = noslip_elems[0]
         nodes_pos_in_elem = conns_mat[curr_elem]
 
@@ -132,11 +132,12 @@ def navier_stokes(data, force_arr):
                     cond += data["nodes"][node] == nip
             elem_match.append(cond > 0)
 
+        count += 1
+
         new_elems = [noslip_elems[x] for x in range(len(noslip_elems)) if not elem_match[x]]
         print('len of noslip_elems: ', len(noslip_elems))
         print('len of new noslip elems: ', len(new_elems))
-        
-        break
+        noslip_elems = new_elems
 
         # new_noslip_elems = []
         # for elem in noslip_elems[1:]:
@@ -144,9 +145,6 @@ def navier_stokes(data, force_arr):
         #         if data["nodes"][node] not in nodes_in_plane:
         #             new_noslip_elems += [elem_match]
         #             break
-
-        print('nodes in plane: ', len(nodes_in_plane))
-        noslip_elems = new_noslip_elems
 
 
 
