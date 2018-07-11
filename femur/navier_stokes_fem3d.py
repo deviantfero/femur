@@ -1,7 +1,9 @@
+import sys
 import sympy as sym
 import math
 import numpy as npy
 from . import matrices_nav_stokes as matrices
+from . import spitter
 from .symbols import *
 from sympy.interactive import printing
 
@@ -281,6 +283,9 @@ def navier_stokes(data, force_arr):
         euler_list += [(i, [curr_x[::6], curr_x[1::6], curr_x[2::6], velocity_0 / variables_mat.shape[0]],
                             curr_x[3::6])]
         next_x = (sym.eye(assembly_left_mat.shape[0]) + delta_time * assembly_left_mat).inv() * (curr_x + delta_time * assembly_right_mat)
-        print(next_x)
         curr_x = next_x
+
+    spitter.init_file(sys.argv[2])
+    for t in euler_list:
+        spitter.write_delta(sys.argv[2], euler_list)
 
